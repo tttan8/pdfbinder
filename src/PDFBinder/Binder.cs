@@ -38,9 +38,19 @@ namespace PDFBinder
             _document.Open();
         }
 
-        public void AddFile(string fileName)
+        public void AddFile(string fileName,int chapterNum)
         {
+            var onlyFileName = Utils.GetFileNameFromPath(fileName);
             var reader = new PdfReader(fileName);
+
+            iTextSharp.text.Font f1 = new iTextSharp.text.Font();
+            f1.SetStyle(iTextSharp.text.Font.BOLD);
+            Paragraph cTitle = new Paragraph(onlyFileName, f1);
+            Chapter chapter = new Chapter(cTitle, chapterNum);
+            //Paragraph sTitle = new Paragraph("This is section 1 in chapter 1", f1);
+            //Section section = chapter.AddSection(sTitle, 1);
+            _document.Add(chapter);
+            _document.NewPage();
 
             for (var i = 1; i <= reader.NumberOfPages; i++)
             {
@@ -51,6 +61,12 @@ namespace PDFBinder
                 var page = _pdfCopy.GetImportedPage(reader, i);
                 _pdfCopy.AddPage(page);
             }
+
+            //iTextSharp.text.Font f1 = new iTextSharp.text.Font();
+            //f1.SetStyle(iTextSharp.text.Font.BOLD);
+            //Paragraph cTitle = new Paragraph("aaaaaaaaaaaa", f1);
+            //Chapter chapter = new Chapter(cTitle, 1);
+            //_pdfCopy.Add(chapter);
 
             reader.Close();
         }
